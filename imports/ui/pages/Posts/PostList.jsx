@@ -1,7 +1,14 @@
 import React, {Fragment} from 'react';
+import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
 import { Link } from 'react-router-dom';
 
 export default class PostList extends React.Component {
+    static propTypes = {
+        match: PropTypes.object.isRequired,
+        history: PropTypes.object.isRequired,
+    };
+
     constructor() {
         super();
         this.state = {posts: null};

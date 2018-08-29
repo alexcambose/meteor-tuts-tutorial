@@ -23,6 +23,6 @@ Meteor.methods({
     },
 
     'post.view' (_id) {
-       return PostService.viewFull(_id);
+        return PostService.viewFull(_id);
     },
 });

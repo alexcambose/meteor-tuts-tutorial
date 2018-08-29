@@ -1,9 +1,16 @@
 import React from 'react';
+import PropTypes from "prop-types";
+import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
 import CommentView from "./comment/CommentView";
 import {PostTypesLabels} from "../../../api/posts/enums/types";
 
 export default class PostView extends React.Component {
+    static propTypes = {
+        match: PropTypes.object.isRequired,
+        history: PropTypes.object.isRequired,
+    };
+
     constructor() {
         super();
         this.state = {post: null};

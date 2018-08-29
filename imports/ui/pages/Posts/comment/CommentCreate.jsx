@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
 import {AutoForm, LongTextField} from 'uniforms-unstyled';
 import CommentSchema from '/db/comments/schema';
 

@@ -1,8 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Meteor } from 'meteor/meteor';
 import {AutoForm, AutoField, LongTextField, SelectField} from 'uniforms-unstyled';
 import PostSchema from '/db/posts/schema';
 
 export default class PostEdit extends React.Component {
+    static propTypes = {
+        match: PropTypes.object.isRequired,
+        history: PropTypes.object.isRequired,
+    };
+
     constructor() {
         super();
         this.state = {post: null};

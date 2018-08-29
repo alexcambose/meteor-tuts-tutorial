@@ -1,3 +1,4 @@
+import { Meteor } from 'meteor/meteor';
 import {Posts} from '/db';
 import CommentService from './CommentService';
 
