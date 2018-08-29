@@ -2,8 +2,8 @@ import SimplSchema from 'simpl-schema';
 
 export default new SimplSchema({
     text: {
-       type: String,
-       min: 2,
+        type: String,
+        min: 2,
     },
     userId: {
         type: String,

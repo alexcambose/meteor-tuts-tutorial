@@ -1,6 +1,7 @@
 import React from 'react';
 import {AutoForm, AutoField, LongTextField, SelectField} from 'uniforms-unstyled';
 import PostSchema from '/db/posts/schema';
+import {PostTypesLabels} from "../../../api/posts/enums/types";
 
 export default class PostCreate extends React.Component {
     constructor() {
@@ -18,13 +19,12 @@ export default class PostCreate extends React.Component {
 
     render() {
         const {history} = this.props;
-
         return (
             <div className="post">
                 <AutoForm onSubmit={this.submit} schema={PostSchema}>
                     <AutoField name="title"/>
                     <LongTextField name="description"/>
-                    <SelectField name="type"/>
+                    <SelectField name="type" options={Object.keys(PostTypesLabels).map(e => ({label: PostTypesLabels[e], value: e}))}/>
 
                     <button type='submit'>Add post</button>
                     <button onClick={() => history.push('/posts')}>Back to posts</button>

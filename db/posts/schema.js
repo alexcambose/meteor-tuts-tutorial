@@ -1,5 +1,6 @@
 import SimplSchema from 'simpl-schema';
-
+import {PostTypesEnum} from "../../imports/api/posts/enums/types";
+SimplSchema.extendOptions(['autoform']);
 export default new SimplSchema({
     title: String,
     description: String,
@@ -17,7 +18,7 @@ export default new SimplSchema({
     },
     type: {
         type: String,
-        defaultValue: 'Nature',
-        allowedValues: ['Nature', 'Psychology', 'Music', 'Programming', 'Project Management', 'Other']
+        defaultValue: Object.values(PostTypesEnum)[0],
+        allowedValues: Object.values(PostTypesEnum),
     }
 });

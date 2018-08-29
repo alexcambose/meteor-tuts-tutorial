@@ -3,7 +3,7 @@ import CommentService from './CommentService';
 
 class PostService {
     static create(post) {
-        Posts.insert({ ...post, userId: this.userId});
+        Posts.insert({ ...post, userId: Meteor.userId()});
     }
     static getAll(){
         const query = Posts.createQuery({

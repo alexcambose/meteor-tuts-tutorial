@@ -1,12 +1,11 @@
 import {Comments} from '/db';
-import Security from "../../security";
 
 
 class CommentService {
     static create(comment, postId) {
         Comments.insert({
             ...comment,
-            userId: this.userId,
+            userId: Meteor.userId(),
             postId,
         });
     }

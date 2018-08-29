@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import CommentView from "./comment/CommentView";
+import {PostTypesLabels} from "../../../api/posts/enums/types";
 
 export default class PostView extends React.Component {
     constructor() {
@@ -34,10 +35,11 @@ export default class PostView extends React.Component {
             <div className="post">
                 <h1>{post.title}</h1>
                 <p>{post.description}</p>
+                <h3>Type: <em>{PostTypesLabels[post.type]}</em></h3>
                 <hr/>
-                Created <strong>{moment(post.createdAt).fromNow()}</strong> |
+                Created <strong>{moment(post.createdAt).fromNow()}</strong> by {post.user ? post.user.emails[0].address : 'Anonymous'} |
                 Viewed <strong>{post.views}</strong> times |
-                <button disabled={Meteor.userId() !== post.user._id} onClick={this.handleDelete}>DELETE</button>
+                <button disabled={post.user && Meteor.userId() !== post.user._id} onClick={this.handleDelete}>DELETE</button>
                 <hr/>
                 <CommentView post={post}/>
             </div>
