@@ -1,5 +1,5 @@
 import {Meteor} from 'meteor/meteor'
-import {Posts} from '/db';
+import {Posts, Comments} from '/db';
 import Security from '/imports/api/security';
 
 Meteor.methods({
@@ -28,5 +28,21 @@ Meteor.methods({
 
     'secured.post_get' (_id) {
         return Posts.findOne(_id);
+    },
+
+    'secured.post_create_comment' (postId, comment) {
+        Security.checkPostExists(postId);
+        Security.checkLoggedIn(this.userId);
+
+        Comments.insert({
+            ...comment,
+            userId: this.userId,
+            postId,
+        });
+    },
+
+    'secured.post_delete_comment' (postId, commentId) {
+        Security.isUserAllowedToDeleteComment(postId, commentId, this.userId);
+        Comments.remove({ _id: commentId });
     }
 });

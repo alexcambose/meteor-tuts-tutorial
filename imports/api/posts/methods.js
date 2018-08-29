@@ -1,9 +1,9 @@
 import {Meteor} from 'meteor/meteor'
-import {Posts} from '/db';
+import {Posts, Comments} from '/db';
 
 Meteor.methods({
     'post.create'(post) {
-        Posts.insert(post);
+        Posts.insert({ ...post, userId: this.userId});
     },
 
     'post.list' () {
@@ -34,5 +34,9 @@ Meteor.methods({
             $inc: { views: 1 }
         });
         return Posts.findOne(_id);
+    },
+
+    'post.comments' (_id) {
+        return Comments.find({ postId: _id }).fetch();
     }
 });
