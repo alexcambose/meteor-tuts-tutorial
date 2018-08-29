@@ -11,10 +11,12 @@ Meteor.methods({
     },
 
     'post.edit' (_id, post) {
+        const { title, description, type } = post;
         Posts.update(_id, {
             $set: {
-                title: post.title,
-                description: post.description
+                title,
+                description,
+                type,
             }
         });
     },
@@ -24,6 +26,13 @@ Meteor.methods({
     },
 
     'post.get' (_id) {
+        return Posts.findOne(_id);
+    },
+
+    'post.view' (_id) {
+        Posts.update(_id, {
+            $inc: { views: 1 }
+        });
         return Posts.findOne(_id);
     }
 });

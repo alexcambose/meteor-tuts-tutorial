@@ -3,6 +3,7 @@ import {Route} from 'react-router';
 import App from './App';
 import Home from './pages/Home';
 import PostCreate from './pages/Posts/PostCreate';
+import PostView from './pages/Posts/PostView';
 import PostEdit from './pages/Posts/PostEdit';
 import PostList from './pages/Posts/PostList';
 import PostListReactive from './pages/Posts/PostListReactive';
@@ -16,6 +17,7 @@ export default () =>
         <Route exact path="/posts" component={PostList} />
         <Route exact path="/posts/reactive" component={PostListReactive} />
         <Route exact path="/posts/create" component={PostCreate} />
+        <Route exact path="/posts/view/:_id" component={PostView} />
         <Route exact path="/posts/edit/:_id" component={PostEdit} />
 
 

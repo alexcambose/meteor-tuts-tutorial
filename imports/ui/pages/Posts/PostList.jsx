@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default class PostList extends React.Component {
     constructor() {
@@ -27,7 +28,7 @@ export default class PostList extends React.Component {
                         return (
                             <div key={post._id}>
                                 <p>Post id: {post._id} </p>
-                                <p>Post title: {post.title}, Post Description: {post.description} </p>
+                                <p>Post title: <Link to={`/posts/view/${post._id}`}>{post.title}</Link>, Post Description: {post.description} </p>
                                 <button onClick={() => {
                                     history.push("/posts/edit/" + post._id)
                                 }}> Edit post
