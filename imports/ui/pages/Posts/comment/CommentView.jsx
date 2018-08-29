@@ -3,15 +3,15 @@ import PropTypes from "prop-types";
 import CommentCreate from "./CommentCreate";
 import CommentList from "./CommentList";
 
-const CommentView = ({ postId }) => (
+const CommentView = ({ post }) => (
     <Fragment>
-        <CommentCreate postId={postId}/>
-        <CommentList postId={postId}/>
+        <CommentCreate post={post}/>
+        <CommentList post={post}/>
     </Fragment>
 );
 
 CommentView.propTypes = {
-    postId: PropTypes.string.isRequired,
+    post: PropTypes.object.isRequired,
 };
 
 export default CommentView;

@@ -1,48 +1,47 @@
 import {Meteor} from 'meteor/meteor'
-import {Posts, Comments} from '/db';
 import Security from '/imports/api/security';
+import CommentService from "./services/CommentService";
+import PostService from "./services/PostService";
 
 Meteor.methods({
     'secured.post_create'(post) {
         Security.checkLoggedIn(this.userId);
-        post.userId = this.userId;
-        Posts.insert(post);
+        PostService.create(post);
     },
 
     'secured.post_list' () {
-        return Posts.find().fetch();
+        Security.checkLoggedIn(this.userId);
+        return PostService.getAll();
     },
 
     'secured.post_edit' (_id, postData) {
-        Posts.update({_id: _id, userId: this.userId}, {
-            $set: {
-                title: postData.title,
-                description: postData.description
-            }
-        });
+        Security.checkLoggedIn(this.userId);
+        //more checks...
+        PostService.edit(_id, postData);
     },
 
     'secured.post_remove' (_id){
-        Posts.remove({_id: _id, userId: this.userId});
+        Security.checkLoggedIn(this.userId);
+        //more checks...
+        PostService.remove(_id);
     },
 
     'secured.post_get' (_id) {
-        return Posts.findOne(_id);
+        Security.checkLoggedIn(this.userId);
+        //more checks...
+
+        return PostService.get(_id);
     },
 
     'secured.post_create_comment' (postId, comment) {
         Security.checkPostExists(postId);
         Security.checkLoggedIn(this.userId);
 
-        Comments.insert({
-            ...comment,
-            userId: this.userId,
-            postId,
-        });
+        CommentService.create(comment, postId);
     },
 
     'secured.post_delete_comment' (postId, commentId) {
         Security.isUserAllowedToDeleteComment(postId, commentId, this.userId);
-        Comments.remove({ _id: commentId });
+        CommentService.remove(commentId);
     }
 });

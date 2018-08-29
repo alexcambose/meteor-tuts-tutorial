@@ -13,12 +13,19 @@ export default class PostView extends React.Component {
             this.setState({post});
         });
     }
-
+    handleDelete = () => {
+        const {history} = this.props;
+        Meteor.call('secured.post_remove', this.state.post._id, (err, post) => {
+            if(err) {
+                return alert(err.reason);
+            }
+            alert("Post deleted! You will be redirected!");
+            history.push("/posts");
+        });
+    };
 
     render() {
-        const {history} = this.props;
         const {post} = this.state;
-
         if (!post) {
             return <div>Loading....</div>
         }
@@ -28,9 +35,11 @@ export default class PostView extends React.Component {
                 <h1>{post.title}</h1>
                 <p>{post.description}</p>
                 <hr/>
-                <p>Created {moment(post.createdAt).fromNow()} | Viewed <strong>{post.views}</strong> times</p>
+                Created <strong>{moment(post.createdAt).fromNow()}</strong> |
+                Viewed <strong>{post.views}</strong> times |
+                <button disabled={Meteor.userId() !== post.user._id} onClick={this.handleDelete}>DELETE</button>
                 <hr/>
-                <CommentView postId={post._id}/>
+                <CommentView post={post}/>
             </div>
         )
     }

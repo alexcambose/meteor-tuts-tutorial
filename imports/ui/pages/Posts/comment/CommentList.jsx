@@ -1,32 +1,44 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CommentBox from "./CommentBox";
 
-export default class CommentCreate extends React.Component {
+export default class CommentList extends React.Component {
     static propTypes = {
-        postId: PropTypes.string.isRequired,
+        post: PropTypes.object.isRequired,
     };
 
-    constructor(props){
-        super(props);
-        this.state = {
-            comments: [],
-        }
-    }
+    handleDelete = index => {
+        const {post} = this.props;
 
-    componentDidMount = () => {
-        Meteor.call('post.comments', this.props.postId, (err, comments) => {
-            this.setState({comments});
+        Meteor.call('secured.post_delete_comment', post._id, post.comments[index]._id, (err) => {
+            if (err) {
+                return alert(err.reason);
+            }
+            alert('Comment deleted!');
         });
     };
 
+    renderComments = () => {
+        const {post} = this.props;
+        return post.comments.map((comment, i) => (
+            <div key={comment._id} className="comment-box" style={{marginBottom: 4}}>
+                <fieldset>
+                    <p>{comment.text}</p>
+                    <small>Email: <strong>{post.user.emails[0].address}</strong></small>
+                    <br/>
+                    {(Meteor.userId() === post.user._id || Meteor.userId() === comment.userId) && <button onClick={() => this.handleDelete(i)}>Delete comment</button>}
+                </fieldset>
+            </div>
+        ));
+    };
+
     render() {
-        const {comments} = this.state;
-        if(comments.length === 0) return <p>No comments!</p>;
+        const {comments} = this.props.post;
+        console.log(this.props.post);
+        if(!comments) return <p>No comments!</p>;
         return (
             <div>
                 <h3>All comments ({comments.length})</h3>
-                {comments.map(e => <CommentBox key={e._id} postId={this.props.postId} comment={e}/>)}
+                {this.renderComments()}
             </div>
         );
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import { Link } from 'react-router-dom';
 
 export default class PostList extends React.Component {
@@ -26,14 +26,17 @@ export default class PostList extends React.Component {
                 {
                     posts.map((post) => {
                         return (
-                            <div key={post._id}>
-                                <p>Post id: {post._id} </p>
-                                <p>Post title: <Link to={`/posts/view/${post._id}`}>{post.title}</Link>, Post Description: {post.description} </p>
-                                <button onClick={() => {
-                                    history.push("/posts/edit/" + post._id)
-                                }}> Edit post
-                                </button>
-                            </div>
+                            <Fragment key={post._id}>
+                                <div>
+                                    <p>Post id: {post._id} </p>
+                                    <p>Post title: <Link to={`/posts/view/${post._id}`}>{post.title}</Link>, Post Description: {post.description} </p>
+                                    <button onClick={() => {
+                                        history.push("/posts/edit/" + post._id)
+                                    }}> Edit post
+                                    </button>
+                                </div>
+                                <hr/>
+                            </Fragment>
                         )
                     })}
                 <button onClick={() => history.push('/posts/create')}>Create a new post</button>
