@@ -1,0 +1,16 @@
+type Email {
+  address: String
+  verified: Boolean
+}
+
+type User
+{
+  _id: String
+  emails: [Email]
+  roles: [String]
+}
+
+
+type Mutation {
+  deleteUser(_id: String): String,
+}

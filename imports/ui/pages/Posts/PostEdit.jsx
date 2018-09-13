@@ -3,31 +3,65 @@ import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import {AutoForm, AutoField, LongTextField, SelectField} from 'uniforms-unstyled';
 import PostSchema from '/db/posts/schema';
+import { withApollo } from 'react-apollo';
+import gql from "graphql-tag";
 
-export default class PostEdit extends React.Component {
+const postEdit = gql`
+    mutation editPost($_id: String, $title: String, $description: String, $type: String){
+        editPost(_id: $_id, title: $title, description: $description, type: $type)
+    }
+`;
+
+const getPosts =  gql`
+query Posts($_id: String){
+    posts(_id: $_id){
+        _id
+        title
+        description
+        type
+    }
+}`;
+
+class PostEdit extends React.Component {
     static propTypes = {
         match: PropTypes.object.isRequired,
         history: PropTypes.object.isRequired,
     };
 
-    constructor() {
-        super();
-        this.state = {post: null};
-    }
+    state = {
+        post: null
+    };
 
     componentDidMount() {
-        Meteor.call('post.get', this.props.match.params._id, (err, post) => {
-            this.setState({post});
+        this.props.client.query({
+            query: getPosts
+        }).then(({ data }) => {
+            console.log(data.posts);
+            this.setState({ post: data.posts[0] });
         });
     }
 
-    submit = (post) => {
-        Meteor.call('post.edit', this.props.match.params._id, post, (err) => {
-            if (err) {
-                return alert(err.reason);
-            }
-            alert('Post modified!')
-        });
+    submit = ({ _id, title, description, type}) => {
+        this.props.client
+            .mutate({
+                mutation: postEdit,
+                variables: {
+                    _id,
+                    title,
+                    description,
+                    type,
+                },
+            })
+            .then(({ data }) => {
+                this.props.history.goBack();
+                alert('Post updated!');
+            });
+        // Meteor.call('post.edit', this.props.match.params._id, post, (err) => {
+        //     if (err) {
+        //         return alert(err.reason);
+        //     }
+        //     alert('Post modified!')
+        // });
     };
 
     render() {
@@ -52,3 +86,5 @@ export default class PostEdit extends React.Component {
         )
     }
 }
+
+export default withApollo(PostEdit);

@@ -1,24 +1,66 @@
 import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
+import gql from 'graphql-tag';
 import { Meteor } from 'meteor/meteor';
 import { Link } from 'react-router-dom';
+import Security from '/imports/api/security';
+import { withApollo } from 'react-apollo';
+import { Roles } from 'meteor/alanning:roles';
 
-export default class PostList extends React.Component {
+const getPosts =  gql`
+{
+	posts {
+	_id
+	title
+	description
+	user {
+	    _id
+	}
+  }
+}`;
+
+const deletePost = gql`
+    mutation deletePost($_id: String){
+        deletePost(_id: $_id)
+    }
+`;
+
+class PostList extends React.Component {
     static propTypes = {
         match: PropTypes.object.isRequired,
         history: PropTypes.object.isRequired,
     };
+    state = {posts: null};
 
-    constructor() {
-        super();
-        this.state = {posts: null};
-    }
 
     componentDidMount() {
-        Meteor.call('post.list', (err, posts) => {
-            this.setState({posts});
+        this.props.client.query({
+            query: getPosts,
+            fetchPolicy: 'no-cache',
+
+        }).then(({ data }) => {
+            this.setState({ posts: data.posts });
         });
     }
+    deletePost = postId => {
+        this.props.client
+            .mutate({
+                mutation: deletePost,
+                variables: {
+                    _id: postId
+                }
+            })
+            .then(() => {
+                this.componentDidMount();
+            });
+    };
+
+    renderDeleteButton = post => {
+        if(Meteor.userId() === post.user._id || Roles.userIsInRole(Meteor.userId(), 'admin')) {
+            return <button onClick={() => this.deletePost(post._id)}>DELETE</button>;
+        }
+        return 'Bitch are not admin';
+    };
 
     render() {
         const {posts} = this.state;
@@ -41,6 +83,7 @@ export default class PostList extends React.Component {
                                         history.push("/posts/edit/" + post._id)
                                     }}> Edit post
                                     </button>
+                                    { this.renderDeleteButton(post) }
                                 </div>
                                 <hr/>
                             </Fragment>
@@ -51,3 +94,5 @@ export default class PostList extends React.Component {
         )
     }
 }
+
+export default withApollo(PostList);

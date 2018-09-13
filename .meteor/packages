@@ -24,3 +24,7 @@ react-meteor-data
 alanning:roles
 momentjs:moment
 cultofcoders:grapher
+cultofcoders:apollo@0.7.8
+swydo:graphql
+nicolaslopezj:apollo-accounts
+cultofcoders:apollo-accounts

@@ -1,5 +1,6 @@
 import {Meteor} from 'meteor/meteor'
 import PostService from "./services/PostService";
+import Security from '/imports/api/security';
 
 Meteor.methods({
     'post.create'(post) {
@@ -15,7 +16,9 @@ Meteor.methods({
     },
 
     'post.remove' (_id){
+        Security.isUserAllowedToDeletePost(_id, this.userId);
         PostService.remove(_id);
+        console.log('post', _id)
     },
 
     'post.get' (_id) {

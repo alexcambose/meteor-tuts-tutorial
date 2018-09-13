@@ -1,0 +1,21 @@
+type Post
+{
+  _id: String!
+  title: String!
+  description: String!
+  type: String!
+  user: User
+  views: Int
+  comments: [Comment]
+}
+
+type Query {
+  posts(_id: String): [Post]
+}
+
+type Mutation {
+  deletePost(_id: String): String,
+  createPost(title: String, description: String, type: String): String
+  editPost(_id: String, title: String, description: String, type: String): String
+  incrementView(_id: String): String
+}

@@ -2,19 +2,32 @@ import React from 'react';
 import {AutoForm, AutoField, LongTextField, SelectField} from 'uniforms-unstyled';
 import PostSchema from '/db/posts/schema';
 import {PostTypesLabels} from "../../../api/posts/enums/types";
+import { withApollo } from 'react-apollo';
+import gql from 'graphql-tag';
 
-export default class PostCreate extends React.Component {
-    constructor() {
-        super();
+const createPosts =  gql`
+    mutation createPost($title: String, $description: String, $type: String){
+        createPost(title: $title, description: $description, type: $type)
     }
+`;
 
-    submit = (post) => {
-        Meteor.call('post.create', post, (err) => {
-            if (err) {
-                return alert(err.reason);
-            }
-            alert('Post added!')
-        });
+
+class PostCreate extends React.Component {
+    submit = ({ title, description, type }) => {
+        this.props.client
+            .mutate({
+                mutation: createPosts,
+                variables: {
+                    title,
+                    description,
+                    type
+                },
+            })
+            .then(({ data }) => {
+                this.props.history.push('/posts');
+                alert('Post added!');
+            });
+
     };
 
     render() {
@@ -33,3 +46,6 @@ export default class PostCreate extends React.Component {
         )
     }
 }
+
+
+export default withApollo(PostCreate);

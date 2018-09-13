@@ -3,10 +3,10 @@ import {Comments} from '/db';
 
 
 class CommentService {
-    static create(comment, postId) {
+    static create(text, postId, userId) {
         Comments.insert({
-            ...comment,
-            userId: Meteor.userId(),
+            text,
+            userId,
             postId,
         });
     }

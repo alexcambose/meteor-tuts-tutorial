@@ -18,24 +18,36 @@ export default class Security {
     static checkPostExists(postId) {
         const post = Posts.findOne(postId);
         if(!post) {
-            throw new Meteor.Error('invalid-id', 'The post id provided is not valid');
+            throw new Meteor.Error('invalid-id', `The post id ${postId} provided is not valid`);
         }
+        return post;
     }
     static checkCommentExists(commentId) {
-        const post = Comments.findOne(commentId);
-        if(!post) {
+        const commment = Comments.findOne(commentId);
+        if(!commment) {
             throw new Meteor.Error('invalid-id', 'The comment id provided is not valid');
         }
+        return commment;
     }
+
     static isUserAllowedToDeleteComment(postId, commentId, userId) {
         this.checkPostExists(postId);
-        this.checkCommentExists(commentId);
-        const post = Posts.findOne(postId);
-        const comment = Comments.findOne(commentId);
+        const comment = this.checkCommentExists(commentId);
         this.checkLoggedIn(userId);
-        if(!(userId === post.userId && userId === comment.userId)) {
+
+        if(userId !== comment.userId && userId !== post.userId && !this.hasRole(userId, 'admin')) {
+            throw new Meteor.Error('not-authorized', 'You are not authorized');;
+        }
+    }
+    static isUserAllowedToDeletePost(postId, userId) {
+        const post = this.checkPostExists(postId);
+        this.checkLoggedIn(userId);
+        if(userId !== post.userId && !this.hasRole(userId, 'admin')) {
             throw new Meteor.Error('not-authorized', 'You are not authorized');
         }
+    }
+    static isUserAllowedToDeleteUser() {
+        
     }
     // add other business logic checks here that you use throughout the app
     // something like: isUserAllowedToSeeDocument()

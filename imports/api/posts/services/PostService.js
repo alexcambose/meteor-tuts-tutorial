@@ -3,18 +3,28 @@ import {Posts} from '/db';
 import CommentService from './CommentService';
 
 class PostService {
-    static create(post) {
-        Posts.insert({ ...post, userId: Meteor.userId()});
+    static create(post, userId) {
+        Posts.insert({ ...post, userId });
     }
-    static getAll(){
-        const query = Posts.createQuery({
-            title: 1,
-            description: 1,
-            createdAt: 1,
-        });
-
-        return query.fetch();
-    }
+    // static getAll(){
+    //     const query = Posts.createQuery({
+    //         title: 1,
+    //         description: 1,
+    //         createdAt: 1,
+    //         user: {
+    //             _id: 1,
+    //             emails: 1
+    //         },
+    //         comments: {
+    //             text: 1,
+    //             user: {
+    //                 emails: 1
+    //             }
+    //         },
+    //     });
+    //
+    //     return query.fetch();
+    // }
     static edit(_id, { title, description, type }) {
         Posts.update(_id, {
             $set: {
@@ -23,18 +33,28 @@ class PostService {
                 type,
             }
         });
-
     }
-    static get(_id) {
+
+    static get(_id = null) {
         const query = Posts.createQuery({
-            $filters: {_id},
+            // $filters: {_id},
             title: 1,
             description: 1,
             createdAt: 1,
             type: 1,
+            views: 1,
+            user: {
+                _id: 1,
+                emails: 1
+            },
+            comments: {
+                text: 1,
+                user: {
+                    emails: 1
+                }
+            },
         });
-
-        return query.fetchOne();
+        return query.fetch();
     }
     static markAsViewed(_id) {
         Posts.update(_id, {

@@ -6,6 +6,11 @@ export default new SimpleSchema({
     'emails.$': {type: Object},
     'emails.$.address': {type: String},
     'emails.$.verified': {type: Boolean},
+    roles: {
+        type: Array,
+        optional: true,
+    },
+    'roles.$': {type: String},
     createdAt: {type: Date},
     services: {type: Object, blackbox: true},
 });

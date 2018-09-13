@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import CommentCreate from "./CommentCreate";
 import CommentList from "./CommentList";
 
-const CommentView = ({ post }) => (
+const CommentView = ({ post }) =>
     <Fragment>
         <CommentCreate post={post}/>
         <CommentList post={post}/>
-    </Fragment>
-);
+    </Fragment>;
+
 
 CommentView.propTypes = {
     post: PropTypes.object.isRequired,

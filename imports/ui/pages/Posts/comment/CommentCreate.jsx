@@ -3,31 +3,48 @@ import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import {AutoForm, LongTextField} from 'uniforms-unstyled';
 import CommentSchema from '/db/comments/schema';
+import { withApollo } from 'react-apollo';
+import gql from "graphql-tag";
 
-export default class CommentCreate extends React.Component {
+const createComment =  gql`
+    mutation createComment($text: String, $postId: String){
+        createComment(text: $text, postId: $postId)
+    }
+`;
+
+class CommentCreate extends React.Component {
     static propTypes = {
         post: PropTypes.object.isRequired,
+        onCreated: PropTypes.bool,
     };
 
-    submit = (comment) => {
-        Meteor.call('secured.post_create_comment', this.props.post._id, comment , (err) => {
-            if (err) {
-                return alert(err.reason);
-            }
-            alert('Comment added!');
-        });
+    submit = ({ text }) => {
+        const { client, post } = this.props;
+        client
+            .mutate({
+                mutation: createComment,
+                variables: {
+                    text,
+                    postId: post._id,
+                },
+            })
+            .then(({ data }) => {
+                location.reload();
+                alert('Comment added!');
+            });
     };
 
     render() {
-        if(!Meteor.user()) return <p style={{color: 'darkred'}}>Only authenticated users can post comments. :(</p>;
+        if(!Meteor.userId()) return <p style={{color: 'darkred'}}>Only authenticated users can post comments. :(</p>;
         return (
             <div className="comment-box">
                 <AutoForm onSubmit={this.submit} schema={CommentSchema}>
                     <LongTextField name="text"/>
-
                     <button type='submit'>Add comment</button>
                 </AutoForm>
             </div>
         )
     }
 }
+
+export default withApollo(CommentCreate);
