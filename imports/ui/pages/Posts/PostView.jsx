@@ -57,7 +57,7 @@ class PostView extends React.Component {
     markViewed(_id) {
         this.props.client.mutate({
             mutation: incrementPostViews,
-            variables: {
+            variable: {
                 _id
             }
         }).then(() => {

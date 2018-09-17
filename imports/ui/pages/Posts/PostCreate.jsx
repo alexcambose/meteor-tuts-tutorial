@@ -1,9 +1,10 @@
 import React from 'react';
-import {AutoForm, AutoField, LongTextField, SelectField} from 'uniforms-unstyled';
+import {AutoForm, AutoField, LongTextField, SelectField} from 'uniforms-antd';
 import PostSchema from '/db/posts/schema';
 import {PostTypesLabels} from "../../../api/posts/enums/types";
 import { withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
+import {Button} from "antd";
 
 const createPosts =  gql`
     mutation createPost($title: String, $description: String, $type: String){
@@ -38,9 +39,10 @@ class PostCreate extends React.Component {
                     <AutoField name="title"/>
                     <LongTextField name="description"/>
                     <SelectField name="type" options={Object.keys(PostTypesLabels).map(e => ({label: PostTypesLabels[e], value: e}))}/>
-
-                    <button type='submit'>Add post</button>
-                    <button onClick={() => history.push('/posts')}>Back to posts</button>
+                    <Button.Group>
+                        <Button htmlType="submit">Add post</Button>
+                        <Button onClick={() => history.push('/posts')}>Back to posts</Button>
+                    </Button.Group>
                 </AutoForm>
             </div>
         )

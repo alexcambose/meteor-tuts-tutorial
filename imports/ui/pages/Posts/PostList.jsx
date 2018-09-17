@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Security from '/imports/api/security';
 import { withApollo } from 'react-apollo';
 import { Roles } from 'meteor/alanning:roles';
+import {Button, ButtonGroup, Card, Meta, Row, Col} from "antd";
 
 const getPosts =  gql`
 {
@@ -30,8 +31,7 @@ class PostList extends React.Component {
         match: PropTypes.object.isRequired,
         history: PropTypes.object.isRequired,
     };
-    state = {posts: null};
-
+    state = {posts: null, intentionDelete: false};
 
     componentDidMount() {
         this.props.client.query({
@@ -42,6 +42,7 @@ class PostList extends React.Component {
             this.setState({ posts: data.posts });
         });
     }
+
     deletePost = postId => {
         this.props.client
             .mutate({
@@ -56,10 +57,17 @@ class PostList extends React.Component {
     };
 
     renderDeleteButton = post => {
+        const { intentionDelete } = this.state;
         if(Meteor.userId() === post.user._id || Roles.userIsInRole(Meteor.userId(), 'admin')) {
-            return <button onClick={() => this.deletePost(post._id)}>DELETE</button>;
+            if(intentionDelete._id === post._id) {
+                return <Button.Group>
+                    <Button type="primary" onClick={() => this.deletePost(post._id)}>Yes</Button>
+                    <Button type="danger" onClick={() => this.setState({ intentionDelete: false })}>No</Button>
+                </Button.Group>;
+            }
+            return <Button block onClick={() => this.setState({ intentionDelete: { _id: post._id } })}>Delete</Button>;
         }
-        return 'Bitch are not admin';
+        return 'You are not admin';
     };
 
     render() {
@@ -67,29 +75,36 @@ class PostList extends React.Component {
         const {history} = this.props;
 
         if (!posts) {
-            return <div>Loading....</div>
+            return <Card block loading={true}></Card>
         }
 
         return (
-            <div className="post">
+            <div className="posts">
                 {
                     posts.map((post) => {
                         return (
-                            <Fragment key={post._id}>
-                                <div>
-                                    <p>Post id: {post._id} </p>
-                                    <p>Post title: <Link to={`/posts/view/${post._id}`}>{post.title}</Link>, Post Description: {post.description} </p>
-                                    <button onClick={() => {
-                                        history.push("/posts/edit/" + post._id)
-                                    }}> Edit post
-                                    </button>
-                                    { this.renderDeleteButton(post) }
-                                </div>
-                                <hr/>
-                            </Fragment>
+                            <Card
+                                style={{ margin: ' 5px 0' }}
+                                key={post._id}
+                                title={post.title}
+                                extra={<Link to={`/posts/view/${post._id}`}>View post</Link>}
+                            >
+                                <p>Post id: {post._id} </p>
+                                <Row type="flex" justify="space-between">
+                                    <Col span={4}>
+                                        <Button block onClick={() => {
+                                            history.push("/posts/edit/" + post._id)
+                                        }}> Edit post
+                                        </Button>
+                                    </Col>
+                                    <Col span={4} style={{ textAlign: 'center' }}>
+                                        { this.renderDeleteButton(post) }
+                                    </Col>
+                                </Row>
+                            </Card>
                         )
                     })}
-                <button onClick={() => history.push('/posts/create')}>Create a new post</button>
+                <Button type="primary" block onClick={() => history.push('/posts/create')}>Create a new post</Button>
             </div>
         )
     }

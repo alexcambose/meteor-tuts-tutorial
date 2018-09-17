@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
-import {AutoForm, LongTextField} from 'uniforms-unstyled';
+import {AutoForm, LongTextField} from 'uniforms-antd';
 import CommentSchema from '/db/comments/schema';
 import { withApollo } from 'react-apollo';
 import gql from "graphql-tag";
+import {Button} from "antd";
 
 const createComment =  gql`
     mutation createComment($text: String, $postId: String){
@@ -40,7 +41,7 @@ class CommentCreate extends React.Component {
             <div className="comment-box">
                 <AutoForm onSubmit={this.submit} schema={CommentSchema}>
                     <LongTextField name="text"/>
-                    <button type='submit'>Add comment</button>
+                    <Button htmlType="submit">Add comment</Button>
                 </AutoForm>
             </div>
         )

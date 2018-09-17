@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
-import {AutoForm, AutoField, LongTextField, SelectField} from 'uniforms-unstyled';
+import {AutoForm, AutoField, LongTextField, SelectField} from 'uniforms-antd';
 import PostSchema from '/db/posts/schema';
 import { withApollo } from 'react-apollo';
 import gql from "graphql-tag";
+import {Button} from "antd";
 
 const postEdit = gql`
     mutation editPost($_id: String, $title: String, $description: String, $type: String){
@@ -78,9 +79,10 @@ class PostEdit extends React.Component {
                     <AutoField name="title"/>
                     <LongTextField name="description"/>
                     <SelectField name="type"/>
-
-                    <button type='submit'>Edit post</button>
-                    <button onClick={() => history.push('/posts')}>Back to posts</button>
+                    <Button.Group>
+                        <Button htmlType="submit">Edit post</Button>
+                        <Button onClick={() => history.push('/posts')}>Back to posts</Button>
+                    </Button.Group>
                 </AutoForm>
             </div>
         )

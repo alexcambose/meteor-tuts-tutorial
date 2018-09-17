@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import { withApollo } from 'react-apollo';
 import gql from "graphql-tag";
-// import { Button } from "@blueprintjs/core";
+import { Button } from 'antd';
 
 const createComment =  gql`
     mutation deleteComment($_id: String){
@@ -29,7 +29,8 @@ const createComment =  gql`
     //     // }
     // }
     handleDelete = _id => {
-        const { post, client } = this.state;
+        const { post } = this.state;
+        const { client } = this.props;
         client.mutate({
                 mutation: createComment,
                 variables: {
@@ -62,7 +63,7 @@ const createComment =  gql`
                     <p>{comment.text}</p>
                     <small>Email: <strong>{post.user.emails[0].address}</strong></small>
                     <br/>
-                    {displayDeletebutton && <button onClick={() => this.handleDelete(comment._id)}>Delete comment</button>}
+                    {displayDeletebutton && <Button onClick={() => this.handleDelete(comment._id)}>Delete comment</Button>}
                 </fieldset>
             </div>
         });
